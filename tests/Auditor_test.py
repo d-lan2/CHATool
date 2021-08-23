@@ -1,5 +1,5 @@
-from ..lib.classes.Auditor import Auditor
-from ..lib.classes.Output import Result
+from ..src.classes.Auditor import Auditor
+from ..src.classes.Output import Result
 import requests
 
 class TestClass:

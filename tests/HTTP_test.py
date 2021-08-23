@@ -1,4 +1,4 @@
-from ..lib.classes.HTTP import HTTP
+from ..src.classes.HTTP import HTTP
 import requests
 
 #Tests written in the AAA format
