@@ -1,7 +1,7 @@
-from ..src.classes.Request import HTTP
+from ..lib.classes.HTTP import HTTP
 import requests
-#from pytest_mock import mocker
 
+#Tests written in the AAA format
 def test_can_make_get_request(mocker) -> None:
     #Arrange - Arrange the test ie set up mocks and expected outputs
     expectedResult = requests.Response()
