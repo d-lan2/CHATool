@@ -1,4 +1,4 @@
-from ..src.classes.Auditor import Auditor
+from ..src.services.Auditor import Auditor
 from pytest_mock import mocker
 
 #Tests written in the AAA format. See HTTP_test.py for more info

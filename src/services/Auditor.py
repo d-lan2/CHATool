@@ -1,5 +1,5 @@
 import requests
-from . import Output
+from ..classes import Output
 
 class Auditor:
 
@@ -34,7 +34,7 @@ class Auditor:
     ]
 
     def analyseHeaders(self, response):
-        results = Output.Result(missingHeaders = [], presentHeaders = [], presentDepricatedHeaders = [], presentAlmostDeprecatedHeaders = [])
+        results = Output.Result()
         for header in self.allSecurityHeaders():
             if header in response.headers:
                 results.presentHeaders.append(header)
