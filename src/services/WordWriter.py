@@ -7,17 +7,16 @@ class WordWriter:
     document = None
 
     def write(self,results,filePath):
-        result = Output.Result()
         self.cloneTemplate(filePath)
         self.writeHeaders(results)
         self.document.save(filePath)
     
     def writeHeaders(self,results: Output.Result):
         headerTable = self.document.tables[1]
-        for key in results.missingHeadersData:
+        for key in results.missingHeadersReportData:
             newTableRowCells = headerTable.add_row().cells
             newTableRowCells[0].text = key
-            newTableRowCells[1].text = results.missingHeadersData[key]
+            newTableRowCells[1].text = results.missingHeadersReportData[key]
 
     def cloneTemplate(self,filePath):
         try:

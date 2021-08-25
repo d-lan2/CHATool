@@ -51,13 +51,13 @@ class Auditor:
 
         return results
 
-    def getMissingHeaderData(self, results):
+    def getMissingHeadersReportData(self, results):
         data = self.getHeadersJson('src\\assets\\HeaderData.json')
-        results.missingHeaderData = {}
+        results.missingHeadersReportData = {}
         for m in results.missingHeaders:
             if m in data:
-                results.missingHeaderData[m] = data[m]
-        return results.missingHeaderData
+                results.missingHeadersReportData[m] = data[m]
+        return results.missingHeadersReportData
     
     def getHeadersJson(self, path):
         with open(path, encoding="utf8") as f:

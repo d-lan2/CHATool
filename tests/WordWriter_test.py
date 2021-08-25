@@ -1,6 +1,7 @@
 from ..src.services.WordWriter import WordWriter
 from ..src.services.Auditor import Auditor
 from ..src.classes.Output import Result
+from docx import Document
 from pytest_mock import mocker
 import os
 
@@ -27,14 +28,17 @@ def test_can_open_and_save_new_copy_of_template(mocker) -> None:
 def test_can_add_missing_headers_to_report(mocker) -> None:
     #Arrange
     fakeResults =  mocker.MagicMock()
-    fakeResults.missingHeadersData = {"Content-Security-Policy": "Some description", "X-Content-Type-Options":"Some description"}
+    fakeResults.missingHeadersReportData = {"Content-Security-Policy": "Some description", "X-Content-Type-Options":"Some description 2"}
     testFilePath = 'output\\test2.docx'
 
     #Act
     WordWriter().write(fakeResults, testFilePath)
 
     #Assert
+    document = Document(testFilePath)
     assert os.path.isfile(testFilePath) == True
+    assert document.tables[1].rows[1].cells[0].text == "Content-Security-Policy"
+    assert document.tables[1].rows[2].cells[1].text == "Some description 2"
 
     #temp teardown - TODO impliment proper setup/teardown functions
     os.remove(testFilePath)  

@@ -58,8 +58,8 @@ def test_can_correctly_get_missing_headers_data(mocker) -> None:
     fakeResults.missingHeaders = ["Content-Security-Policy", "X-Content-Type-Options"]
 
     #Act
-    missingHeaderData = Auditor().getMissingHeaderData(fakeResults)
+    missingHeadersReportData = Auditor().getMissingHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert missingHeaderData["Content-Security-Policy"] == "Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking."
-    assert len(missingHeaderData) == 2
+    assert missingHeadersReportData["Content-Security-Policy"] == "Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking."
+    assert len(missingHeadersReportData) == 2
