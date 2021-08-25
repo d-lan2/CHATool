@@ -6,7 +6,7 @@ class Result:
         self.presentHeaders = []
         self.presentDepricatedHeaders = []
         self.presentAlmostDeprecatedHeaders = []
-
+        self.missingHeaderData = {}
     
 
 

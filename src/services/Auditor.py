@@ -1,4 +1,5 @@
 import requests
+import json
 from ..classes import Output
 
 class Auditor:
@@ -11,7 +12,7 @@ class Auditor:
     activeHeaders = [
         #see https://owasp.org/www-project-secure-headers/
         #Active headers
-        "HTTP Strict Transport Security",
+        "Strict-Transport-Security",
         "X-Frame-Options",
         "X-Content-Type-Options",
         "Content-Security-Policy",
@@ -49,3 +50,16 @@ class Auditor:
                 
 
         return results
+
+    def getMissingHeaderData(self, results):
+        data = self.getHeadersJson('src\\assets\\HeaderData.json')
+        results.missingHeaderData = {}
+        for m in results.missingHeaders:
+            if m in data:
+                results.missingHeaderData[m] = data[m]
+        return results.missingHeaderData
+    
+    def getHeadersJson(self, path):
+        with open(path, encoding="utf8") as f:
+            data = json.load(f)
+        return data

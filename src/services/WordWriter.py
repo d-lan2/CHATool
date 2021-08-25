@@ -1,13 +1,25 @@
+from os import write
 from docx import Document
 from docx.shared import Inches
 from ..classes import Output
 
 class WordWriter:
-    def write(self,result,filePath):
-        result = Output.Result()
-        self.writeHeaders(filePath)
+    document = None
 
-    def writeHeaders(self,filePath):
+    def write(self,results,filePath):
+        result = Output.Result()
+        self.cloneTemplate(filePath)
+        self.writeHeaders(results)
+        self.document.save(filePath)
+    
+    def writeHeaders(self,results: Output.Result):
+        headerTable = self.document.tables[1]
+        for key in results.missingHeadersData:
+            newTableRowCells = headerTable.add_row().cells
+            newTableRowCells[0].text = key
+            newTableRowCells[1].text = results.missingHeadersData[key]
+
+    def cloneTemplate(self,filePath):
         try:
             document = Document('src\\assets\\HeadersTemplate.docx')
         except:
@@ -17,6 +29,8 @@ class WordWriter:
             document.save(filePath)
         except:
              print("Cannot save doc to specified locaiton")
+
+        self.document = document
 
     def write1():
         document = Document()

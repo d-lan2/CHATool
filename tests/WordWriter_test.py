@@ -24,14 +24,17 @@ def test_can_open_and_save_new_copy_of_template(mocker) -> None:
     os.remove(testFilePath)  
     
 
-# def test_can_identify_present_headers(mocker) -> None:
-#     #Arrange
-#     fakeResult = Result()
+def test_can_add_missing_headers_to_report(mocker) -> None:
+    #Arrange
+    fakeResults =  mocker.MagicMock()
+    fakeResults.missingHeadersData = {"Content-Security-Policy": "Some description", "X-Content-Type-Options":"Some description"}
+    testFilePath = 'output\\test2.docx'
 
-#     fakeResponse.headers = {"Content-Security-Policy": "script-src ''" , "X-Content-Type-Options": "nosniff"}
-#     #Act
-#     result = Auditor().analyseHeaders(fakeResponse)
+    #Act
+    WordWriter().write(fakeResults, testFilePath)
 
-#     #Assert
-#     assert len(result.missingHeaders) == 12
-#     assert len(result.presentHeaders) == 2
+    #Assert
+    assert os.path.isfile(testFilePath) == True
+
+    #temp teardown - TODO impliment proper setup/teardown functions
+    os.remove(testFilePath)  
