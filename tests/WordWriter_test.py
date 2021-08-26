@@ -28,7 +28,7 @@ def test_can_open_and_save_new_copy_of_template(mocker) -> None:
 def test_can_add_missing_headers_to_report(mocker) -> None:
     #Arrange
     fakeResults =  mocker.MagicMock()
-    fakeResults.missingHeadersReportData = {"Content-Security-Policy": "Some description", "X-Content-Type-Options":"Some description 2"}
+    fakeResults.headersReportData = {"Content-Security-Policy": "Some description", "X-Content-Type-Options":"Some description 2"}
     testFilePath = 'output\\test2.docx'
 
     #Act

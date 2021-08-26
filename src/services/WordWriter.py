@@ -15,9 +15,9 @@ class WordWriter:
         headerTable = self.document.tables[1]
 
         allHeadersReportData = {}
-        allHeadersReportData.update(results.missingHeadersReportData)
-        allHeadersReportData.update(results.almostDeprecatedHeadersReportData)
-        allHeadersReportData.update(results.deprecatedHeadersReportData)
+        allHeadersReportData.update(results.headersReportData)
+        allHeadersReportData.update(results.headersReportData)
+        allHeadersReportData.update(results.headersReportData)
 
         for key in allHeadersReportData:
             newTableRowCells = headerTable.add_row().cells

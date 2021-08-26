@@ -1,4 +1,5 @@
 from ..src.services.Auditor import Auditor
+from ..src.classes.Output import Result
 from pytest_mock import mocker
 
 #Tests written in the AAA format. See HTTP_test.py for more info
@@ -11,7 +12,7 @@ def test_can_identify_present_headers(mocker) -> None:
     result = Auditor().analyseHeaders(fakeResponse)
 
     #Assert
-    assert len(result.missingHeaders) == 12
+    assert len(result.missingHeaders) == 8
     assert len(result.presentHeaders) == 2
 
 
@@ -54,35 +55,35 @@ def test_can_correctly_parse_header_JSON_data_from_file(mocker) -> None:
 
 def test_can_correctly_get_missing_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults =  mocker.MagicMock()
+    fakeResults = Result()
     fakeResults.missingHeaders = ["Content-Security-Policy", "X-Content-Type-Options"]
 
     #Act
-    missingHeadersReportData = Auditor().getMissingHeadersReportData(fakeResults)
+    headersReportData = Auditor().getHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert missingHeadersReportData["Content-Security-Policy"] == "Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking."
-    assert len(missingHeadersReportData) == 2
+    assert headersReportData["Content-Security-Policy"] == "Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking."
+    assert len(headersReportData) == 2
 
 def test_can_correctly_get_deprecated_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults =  mocker.MagicMock()
+    fakeResults = Result()
     fakeResults.presentDeprecatedHeaders = ["Public-Key-Pins", "X-XSS-Protection"]
 
     #Act
-    presentDeprecatedHeadersReportData = Auditor().getDeprecatedHeadersReportData(fakeResults)
+    presentheadersReportData = Auditor().getHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert presentDeprecatedHeadersReportData["Public-Key-Pins"] == "WARNING: This header has been deprecated by all major browsers and is no longer recommended. Avoid using it, and update existing code if possible."
-    assert len(presentDeprecatedHeadersReportData) == 2
+    assert presentheadersReportData["Public-Key-Pins"] == "WARNING: This header has been deprecated by all major browsers and is no longer recommended. Avoid using it, and update existing code if possible."
+    assert len(presentheadersReportData) == 2
 
 def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults =  mocker.MagicMock()
+    fakeResults = Result()
     fakeResults.presentAlmostDeprecatedHeaders = ["Feature-Policy"]
     #Act
-    presentAlmostDeprecatedHeadersReportData = Auditor().getAlmostDeprecatedHeadersReportData(fakeResults)
+    presentheadersReportData = Auditor().getHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert presentAlmostDeprecatedHeadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
-    assert len(presentAlmostDeprecatedHeadersReportData) == 1
+    assert presentheadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
+    assert len(presentheadersReportData) == 1

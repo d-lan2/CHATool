@@ -6,9 +6,7 @@ class Result:
         self.presentHeaders = []
         self.presentDeprecatedHeaders = []
         self.presentAlmostDeprecatedHeaders = []
-        self.missingHeadersReportData = {}
-        self.deprecatedHeadersReportData = {}
-        self.almostDeprecatedHeadersReportData = {}
+        self.headersReportData = {}
     
 
 

@@ -41,7 +41,8 @@ class Auditor:
             if header in response.headers:
                 results.presentHeaders.append(header)
             else:
-                results.missingHeaders.append(header)
+                if header in self.activeHeaders:
+                    results.missingHeaders.append(header)
 
             if header in self.almostDeprecatedHeaders and header in response.headers:
                 results.presentAlmostDeprecatedHeaders.append(header)
@@ -49,35 +50,19 @@ class Auditor:
             if header in self.deprecatedHeaders and header in response.headers:
                 results.presentDeprecatedHeaders.append(header)
                 
-        results.missingHeadersReportData = self.getMissingHeadersReportData(results)
-        results.deprecatedHeadersReportData = self.getDeprecatedHeadersReportData(results)
-        results.almostDeprecatedHeadersReportData = self.getAlmostDeprecatedHeadersReportData(results)
+        results.headersReportData = self.getHeadersReportData(results)
+
         return results
 
-    def getMissingHeadersReportData(self, results : Output.Result):
+    def getHeadersReportData(self, results : Output.Result):
         data = self.getHeadersJson(self.headerJsonLocation)
-        results.missingHeadersReportData = {}
-        for h in results.missingHeaders:
+        headersToAddToReport = results.missingHeaders + results.presentAlmostDeprecatedHeaders + results.presentDeprecatedHeaders
+        results.headersReportData = {}
+        for h in headersToAddToReport:
             if h in data:
-                results.missingHeadersReportData[h] = data[h]
+                results.headersReportData[h] = data[h]
         
-        return results.missingHeadersReportData
-    
-    def getDeprecatedHeadersReportData(self, results : Output.Result):
-        data = self.getHeadersJson(self.headerJsonLocation)
-        results.deprecatedHeadersReportData = {}
-        for h in results.presentDeprecatedHeaders:
-            if h in data:
-                results.deprecatedHeadersReportData[h] = data[h]
-        return results.deprecatedHeadersReportData
-
-    def getAlmostDeprecatedHeadersReportData(self, results : Output.Result):
-        data = self.getHeadersJson(self.headerJsonLocation)
-        results.almostDeprecatedHeadersReportData = {}
-        for h in results.presentAlmostDeprecatedHeaders:
-            if h in data:
-                results.almostDeprecatedHeadersReportData[h] = data[h]
-        return results.almostDeprecatedHeadersReportData
+        return results.headersReportData
 
     def getHeadersJson(self, path):
         with open(path, encoding="utf8") as f:
