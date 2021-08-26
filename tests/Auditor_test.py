@@ -63,3 +63,27 @@ def test_can_correctly_get_missing_headers_data(mocker) -> None:
     #Assert - more of an integration test rather than unit test
     assert missingHeadersReportData["Content-Security-Policy"] == "Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking."
     assert len(missingHeadersReportData) == 2
+
+def test_can_correctly_get_deprecated_headers_data(mocker) -> None:
+    #Arrange 
+    fakeResults =  mocker.MagicMock()
+    fakeResults.presentDepricatedHeaders = ["Public-Key-Pins", "X-XSS-Protection"]
+
+    #Act
+    presentDepricatedHeadersReportData = Auditor().getDeprecatedHeadersReportData(fakeResults)
+    
+    #Assert - more of an integration test rather than unit test
+    assert presentDepricatedHeadersReportData["Public-Key-Pins"] == ""
+    assert len(presentDepricatedHeadersReportData) == 2
+
+def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
+    #Arrange 
+    fakeResults =  mocker.MagicMock()
+    fakeResults.presentAlmostDepricatedHeaders = ["Feature-Policy", "Expect-CT"]
+
+    #Act
+    presentAlmostDepricatedHeadersReportData = Auditor().getAlmostDeprecatedHeadersReportData(fakeResults)
+    
+    #Assert - more of an integration test rather than unit test
+    assert presentAlmostDepricatedHeadersReportData["Feature-Policy"] == ""
+    assert len(presentAlmostDepricatedHeadersReportData) == 2
