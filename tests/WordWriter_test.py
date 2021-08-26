@@ -35,7 +35,8 @@ def test_can_add_missing_headers_to_report(mocker) -> None:
     WordWriter().writeDoc(fakeResults, testFilePath)
 
     #Assert
-    document = Document(testFilePath)
+    if os.path.isfile(testFilePath):
+        document = Document(testFilePath)
     assert os.path.isfile(testFilePath) == True
     assert document.tables[1].rows[1].cells[0].text == "Content-Security-Policy"
     assert document.tables[1].rows[2].cells[1].text == "Some description 2"
