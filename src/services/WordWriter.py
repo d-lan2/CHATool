@@ -6,7 +6,7 @@ from ..classes import Output
 class WordWriter:
     document = None
 
-    def write(self,results : Output.Result,filePath):
+    def writeDoc(self,results : Output.Result,filePath):
         self.cloneTemplate(filePath)
         self.writeHeaders(results)
         self.document.save(filePath)
@@ -22,7 +22,7 @@ class WordWriter:
         for key in allHeadersReportData:
             newTableRowCells = headerTable.add_row().cells
             newTableRowCells[0].text = key
-            newTableRowCells[1].text = results.missingHeadersReportData[key]
+            newTableRowCells[1].text = allHeadersReportData[key]
 
     def cloneTemplate(self,filePath):
         try:

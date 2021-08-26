@@ -12,7 +12,7 @@ def test_can_open_and_save_new_copy_of_template(mocker) -> None:
     fakeResult = Result()
   
     #Act
-    WordWriter().write(fakeResult, testFilePath)
+    WordWriter().writeDoc(fakeResult, testFilePath)
 
     #Assert
     #Asseting the conents of two word documents in a unit test seems like a real pain. Though it can be done my manually inspecting the xml
@@ -32,7 +32,7 @@ def test_can_add_missing_headers_to_report(mocker) -> None:
     testFilePath = 'output\\test2.docx'
 
     #Act
-    WordWriter().write(fakeResults, testFilePath)
+    WordWriter().writeDoc(fakeResults, testFilePath)
 
     #Assert
     document = Document(testFilePath)

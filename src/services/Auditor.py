@@ -1,4 +1,3 @@
-import requests
 import json
 from ..classes import Output
 
@@ -48,9 +47,11 @@ class Auditor:
                 results.presentAlmostDeprecatedHeaders.append(header)
 
             if header in self.deprecatedHeaders and header in response.headers:
-                results.presentDepricatedHeaders.append(header)
+                results.presentDeprecatedHeaders.append(header)
                 
-
+        results.missingHeadersReportData = self.getMissingHeadersReportData(results)
+        results.deprecatedHeadersReportData = self.getDeprecatedHeadersReportData(results)
+        results.almostDeprecatedHeadersReportData = self.getAlmostDeprecatedHeadersReportData(results)
         return results
 
     def getMissingHeadersReportData(self, results : Output.Result):
@@ -65,7 +66,7 @@ class Auditor:
     def getDeprecatedHeadersReportData(self, results : Output.Result):
         data = self.getHeadersJson(self.headerJsonLocation)
         results.deprecatedHeadersReportData = {}
-        for h in results.presentDepricatedHeaders:
+        for h in results.presentDeprecatedHeaders:
             if h in data:
                 results.deprecatedHeadersReportData[h] = data[h]
         return results.deprecatedHeadersReportData
@@ -73,7 +74,7 @@ class Auditor:
     def getAlmostDeprecatedHeadersReportData(self, results : Output.Result):
         data = self.getHeadersJson(self.headerJsonLocation)
         results.almostDeprecatedHeadersReportData = {}
-        for h in results.presentAlmostDepricatedHeaders:
+        for h in results.presentAlmostDeprecatedHeaders:
             if h in data:
                 results.almostDeprecatedHeadersReportData[h] = data[h]
         return results.almostDeprecatedHeadersReportData

@@ -4,7 +4,7 @@ class Result:
         self.errors = None
         self.missingHeaders = []
         self.presentHeaders = []
-        self.presentDepricatedHeaders = []
+        self.presentDeprecatedHeaders = []
         self.presentAlmostDeprecatedHeaders = []
         self.missingHeadersReportData = {}
         self.deprecatedHeadersReportData = {}

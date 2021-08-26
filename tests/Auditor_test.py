@@ -36,7 +36,7 @@ def test_can_identify_present_deprecated_headers(mocker) -> None:
     result = Auditor().analyseHeaders(fakeResponse)
 
     #Assert
-    assert len(result.presentDepricatedHeaders) == 3
+    assert len(result.presentDeprecatedHeaders) == 3
     assert len(result.presentHeaders) == 3
 
 def test_can_correctly_parse_header_JSON_data_from_file(mocker) -> None:
@@ -67,23 +67,22 @@ def test_can_correctly_get_missing_headers_data(mocker) -> None:
 def test_can_correctly_get_deprecated_headers_data(mocker) -> None:
     #Arrange 
     fakeResults =  mocker.MagicMock()
-    fakeResults.presentDepricatedHeaders = ["Public-Key-Pins", "X-XSS-Protection"]
+    fakeResults.presentDeprecatedHeaders = ["Public-Key-Pins", "X-XSS-Protection"]
 
     #Act
-    presentDepricatedHeadersReportData = Auditor().getDeprecatedHeadersReportData(fakeResults)
+    presentDeprecatedHeadersReportData = Auditor().getDeprecatedHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert presentDepricatedHeadersReportData["Public-Key-Pins"] == "WARNING: This header has been deprecated by all major browsers and is no longer recommended. Avoid using it, and update existing code if possible."
-    assert len(presentDepricatedHeadersReportData) == 2
+    assert presentDeprecatedHeadersReportData["Public-Key-Pins"] == "WARNING: This header has been deprecated by all major browsers and is no longer recommended. Avoid using it, and update existing code if possible."
+    assert len(presentDeprecatedHeadersReportData) == 2
 
 def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
     #Arrange 
     fakeResults =  mocker.MagicMock()
-    fakeResults.presentAlmostDepricatedHeaders = ["Feature-Policy"]
-
+    fakeResults.presentAlmostDeprecatedHeaders = ["Feature-Policy"]
     #Act
-    presentAlmostDepricatedHeadersReportData = Auditor().getAlmostDeprecatedHeadersReportData(fakeResults)
+    presentAlmostDeprecatedHeadersReportData = Auditor().getAlmostDeprecatedHeadersReportData(fakeResults)
     
     #Assert - more of an integration test rather than unit test
-    assert presentAlmostDepricatedHeadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
-    assert len(presentAlmostDepricatedHeadersReportData) == 1
+    assert presentAlmostDeprecatedHeadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
+    assert len(presentAlmostDeprecatedHeadersReportData) == 1
