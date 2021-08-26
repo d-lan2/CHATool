@@ -1,7 +1,8 @@
 import json
 from ..classes import Output
+from requests import Response
 
-class Auditor:
+class HeaderAuditor:
 
     @classmethod
     def allSecurityHeaders(cls):
@@ -35,7 +36,7 @@ class Auditor:
         "X-XSS-Protection"
     ]
 
-    def analyseHeaders(self, response):
+    def analyseHeaders(self, response : Response ):
         results = Output.Result()
         for header in self.allSecurityHeaders():
             if header in response.headers:
@@ -68,3 +69,16 @@ class Auditor:
         with open(path, encoding="utf8") as f:
             data = json.load(f)
         return data
+
+class CookieAuditor:
+    #Annoyingly so far I can only intercept and read insecure cookeis by the looks of it.
+    #read this for potential work around
+    #https://stackoverflow.com/questions/37710226/how-do-i-reach-cookie-information-in-python-requests
+    #Secure
+    #HTTPOnly
+    #Path
+    #Domain
+    #Cookie lifetime
+    #SameSite
+    #see https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20171130_Cookie_Security_Myths_Misconceptions_David_Johansson.pdf
+    x = {}

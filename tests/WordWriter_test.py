@@ -1,5 +1,5 @@
 from ..src.services.WordWriter import WordWriter
-from ..src.services.Auditor import Auditor
+from ..src.services.Auditor import HeaderAuditor
 from ..src.classes.Output import Result
 from docx import Document
 from pytest_mock import mocker

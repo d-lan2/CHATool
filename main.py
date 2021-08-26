@@ -1,7 +1,7 @@
 """CHATool Cookie and Header Auditor Tool"""
 
 from .src.classes.HTTP import HTTP
-from .src.services.Auditor import Auditor
+from .src.services.Auditor import HeaderAuditor
 from .src.services.WordWriter import WordWriter
 
 
@@ -15,7 +15,7 @@ def main(self):
     
 def parameterisedMain(url,outputfilepath):
     response = HTTP.get(url)
-    results = Auditor().analyseHeaders(response)
+    results = HeaderAuditor().analyseHeaders(response)
     WordWriter().writeDoc(results, outputfilepath)
     return response.status_code
 
