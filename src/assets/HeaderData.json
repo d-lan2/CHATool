@@ -1,7 +1,20 @@
 {
         "Strict-Transport-Security":"Strict Transport Security enforces the use of HTTPS in the web browser, ensuring that no information is sent for the domain (and optionally subdomains too), even if a link to a plain HTTP page is included or the user unintentionally navigates to a HTTP link. This additionally mitigates the risk of cookies without the secure flag set, by enforcing HTTPS only.",
-        "Content-Security-Policy":"Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking.",
+        "X-Frame-Options":"X-Frame-Options is one method of controlling which sites may frame the web application, however it is not fully implemented in Chrome (in favour of CSP). Thereby the only available options are DENY or SAMEORIGIN. If more granularity is required, consider CSP instead. Preventing framing can prevent Clickjacking attacks."  ,
         "X-Content-Type-Options":"X-Content-Type-Options prevents a browser from attempting to enumerate the MIME-type of a server response, thereby preventing some types of cross-site scripting attack.",
+        "Content-Security-Policy":"Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking.",
+        "X-Permitted-Cross-Domain-Policies":"",
         "Referrer-Policy":"Referrer Policy allows a web application to reduce when the “referrer” header is set. Thereby preventing sensitive data in the URL from being transmitted to third-parties or over insecure connections.",
-        "X-Frame-Options":"X-Frame-Options is one method of controlling which sites may frame the web application, however it is not fully implemented in Chrome (in favour of CSP). Thereby the only available options are DENY or SAMEORIGIN. If more granularity is required, consider CSP instead. Preventing framing can prevent Clickjacking attacks."  
+        "Clear-Site-Data":"",
+        "Cross-Origin-Embedder-Policy":"",
+        "Cross-Origin-Opener-Policy":"",
+        "Cross-Origin-Resource-Policy":"",
+        
+        
+        "Feature-Policy":"",
+        "Expect-CT":"",
+
+
+        "Public-Key-Pins":"",
+        "X-XSS-Protection":""
 }
