@@ -5,16 +5,20 @@
         "Content-Security-Policy":"Content Security Policy allows you to whitelist web application resource locations, including where scripts can be loaded from and where the application may be framed. This can therefore mitigate reflected cross-site scripting attacks as well as issues such as Clickjacking.",
         "X-Permitted-Cross-Domain-Policies":"",
         "Referrer-Policy":"Referrer Policy allows a web application to reduce when the “referrer” header is set. Thereby preventing sensitive data in the URL from being transmitted to third-parties or over insecure connections.",
-        "Clear-Site-Data":"",
-        "Cross-Origin-Embedder-Policy":"",
-        "Cross-Origin-Opener-Policy":"",
-        "Cross-Origin-Resource-Policy":"",
+        "Clear-Site-Data":"The Clear Site Data header allows the application developer more control over locally stored data (cookies, storage, cache) by allowing them to specify when a browser should remove the data. This is particularly useful during deauthentication to prevent cookie stealing, and even more so on shared computers.",
+        "Cross-Origin-Embedder-Policy":"The COEP response header prevents a document from loading embedded content that is not specifically defined as safe/authorized by the Cross-Origin Resource Policy or Cross-Origin Resource Sharing headers.",
+        "Cross-Origin-Opener-Policy":"This response header (also named COOP) allows you to ensure a top-level document does not share a browsing context group with cross-origin documents. COOP will process-isolate your document and potential attackers can’t access to your global object if they were opening it in a popup, preventing a set of cross-origin attacks dubbed XS-Leaks (source Mozilla MDN).",
+        "Cross-Origin-Resource-Policy":"This response header (also named CORP) enables a site to define a policy that deciates whether the site will share its private data with either same-site, same-origin sites or cross-origin (third-parties). This is often used to help maintain a logged in session when traversing across sub-domains. The goal of this policy is to help mitigate speculative side-channel attacks, like Spectre, as well as Cross-Site Script Inclusion (XSSI) attacks.",
         
-        
-        "Feature-Policy":"",
-        "Expect-CT":"",
 
 
-        "Public-Key-Pins":"",
-        "X-XSS-Protection":""
+        
+        "Feature-Policy":"WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera.",
+
+
+
+
+        "Expect-CT":"INFO: Obselete as of June 2021. \nThe Expect-CT header is used by a server to indicate that browsers should evaluate connections to the host for Certificate Transparency compliance. Specifically, when a site enables the Expect-CT header, they are requesting that the browser check that any certificate for that site appears in public CT logs",
+        "Public-Key-Pins":"WARNING: This header has been deprecated by all major browsers and is no longer recommended. Avoid using it, and update existing code if possible.",
+        "X-XSS-Protection":"WARNING: The X-XSS-Protection header has been deprecated by modern browsers and its use can introduce additional security issues on the client side. As such, it is recommended to set the header as X-XSS-Protection: 0 in order to disable the XSS Auditor, and not allow it to take the default behavior of the browser handling the response. Please use Content-Security-Policy instead."
 }

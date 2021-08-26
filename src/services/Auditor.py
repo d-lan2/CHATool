@@ -27,11 +27,11 @@ class Auditor:
     ]
 
     almostDeprecatedHeaders = [
-        "Feature-Policy",
-        "Expect-CT"
+        "Feature-Policy"
     ]
     
     deprecatedHeaders = [
+        "Expect-CT",
         "Public-Key-Pins",
         "X-XSS-Protection"
     ]
