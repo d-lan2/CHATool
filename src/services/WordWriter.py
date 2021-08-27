@@ -6,12 +6,12 @@ from ..classes import Output
 class WordWriter:
     document = None
 
-    def writeDoc(self,results : Output.Result,filePath):
+    def writeDoc(self,results : Output.HeaderResult,filePath):
         self.cloneTemplate(filePath)
         self.writeHeaders(results)
         self.document.save(filePath)
     
-    def writeHeaders(self,results: Output.Result):
+    def writeHeaders(self,results: Output.HeaderResult):
         headerTable = self.document.tables[1]
 
         allHeadersReportData = {}

@@ -1,6 +1,8 @@
-from ..src.services.Auditor import HeaderAuditor
-from ..src.classes.Output import Result
+from http.cookiejar import Cookie
+from ..src.services.Auditor import CookieAuditor, HeaderAuditor
+from ..src.classes.Output import HeaderResult
 from pytest_mock import mocker
+import requests 
 
 #Tests written in the AAA format. See HTTP_test.py for more info
 
@@ -55,7 +57,7 @@ def test_can_correctly_parse_header_JSON_data_from_file(mocker) -> None:
 
 def test_can_correctly_get_missing_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults = Result()
+    fakeResults = HeaderResult()
     fakeResults.missingHeaders = ["Content-Security-Policy", "X-Content-Type-Options"]
 
     #Act
@@ -67,7 +69,7 @@ def test_can_correctly_get_missing_headers_data(mocker) -> None:
 
 def test_can_correctly_get_deprecated_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults = Result()
+    fakeResults = HeaderResult()
     fakeResults.presentDeprecatedHeaders = ["Public-Key-Pins", "X-XSS-Protection"]
 
     #Act
@@ -79,7 +81,7 @@ def test_can_correctly_get_deprecated_headers_data(mocker) -> None:
 
 def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
     #Arrange 
-    fakeResults = Result()
+    fakeResults = HeaderResult()
     fakeResults.presentAlmostDeprecatedHeaders = ["Feature-Policy"]
     #Act
     presentheadersReportData = HeaderAuditor().getHeadersReportData(fakeResults)
@@ -88,15 +90,36 @@ def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
     assert presentheadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
     assert len(presentheadersReportData) == 1
 
-def test_can_identify_potential_missing_cookie_attributes(mocker) -> None:
+def test_can_identify_cookie_attributes(mocker) -> None:
     #Arrange 
-    fakeResults = mocker.MagicMock()
-    fakeResults.cookies = []
-    #this is how ill be accessing the cookeis
-    #response.cookies.items()
+    cookie = Cookie(version=0, name='SID', value='kvm5ds88s5gsggdosg9o1liuj6t52917hmjcd1j1ljv02fgb0snbajanogsommek8opfdcd1mkqmoppm63fa621gai7s78cunkfpn71', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None, 'SameSite':'Strict'}, rfc2109=False)
+    fakeResponse = mocker.MagicMock()
+    fakeResponse.cookies = [cookie]
+
     #Act
-    presentheadersReportData = HeaderAuditor().getHeadersReportData(fakeResults)
+    cookietData = CookieAuditor().getCookieData(fakeResponse)
     
-    #Assert - more of an integration test rather than unit test
-    assert presentheadersReportData["Feature-Policy"] == "WARNING: This header was split into Permissions-Policy and Document-Policy and will be considered deprecated once all impacted features are moved off of feature policy. \nThe Feature-Policy header is an experimental feature that allows developers to selectively enable and disable use of various browser features and APIs.The two most well supported values are microphone and camera."
-    assert len(presentheadersReportData) == 1
+    #Assert 
+    assert cookietData.cookies[0].domain == 'hack.me'
+    assert cookietData.cookies[0].httpOnly == True
+    assert cookietData.cookies[0].lifetime == 1630158864
+    assert cookietData.cookies[0].path == '/'
+    assert cookietData.cookies[0].sameSite == 'Strict'
+    assert cookietData.cookies[0].secure == True
+
+def test_can_recommend_safe_cookie_config(mocker) -> None:
+    #Arrange 
+    cookie = Cookie(version=0, name='SID', value='kvm5ds88s5gsggdosg9o1liuj6t52917hmjcd1j1ljv02fgb0snbajanogsommek8opfdcd1mkqmoppm63fa621gai7s78cunkfpn71', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None, 'SameSite':'Strict'}, rfc2109=False)
+    fakeResponse = mocker.MagicMock()
+    fakeResponse.cookies = [cookie]
+
+    #Act
+    cookietData = CookieAuditor().getCookieData(fakeResponse)
+    
+    #Assert 
+    assert cookietData.cookies[0].domain == 'hack.me'
+    assert cookietData.cookies[0].httpOnly == True
+    assert cookietData.cookies[0].lifetime == 1630158864
+    assert cookietData.cookies[0].path == '/'
+    assert cookietData.cookies[0].sameSite == 'Strict'
+    assert cookietData.cookies[0].secure == True

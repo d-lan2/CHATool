@@ -37,7 +37,8 @@ class HeaderAuditor:
     ]
 
     def analyseHeaders(self, response : Response ):
-        results = Output.Result()
+        results = Output.HeaderResult()
+
         for header in self.allSecurityHeaders():
             if header in response.headers:
                 results.presentHeaders.append(header)
@@ -55,7 +56,7 @@ class HeaderAuditor:
 
         return results
 
-    def getHeadersReportData(self, results : Output.Result):
+    def getHeadersReportData(self, results : Output.HeaderResult):
         data = self.getHeadersJson(self.headerJsonLocation)
         headersToAddToReport = results.missingHeaders + results.presentAlmostDeprecatedHeaders + results.presentDeprecatedHeaders
         results.headersReportData = {}
@@ -71,14 +72,56 @@ class HeaderAuditor:
         return data
 
 class CookieAuditor:
-    #Annoyingly so far I can only intercept and read insecure cookeis by the looks of it.
-    #read this for potential work around
-    #https://stackoverflow.com/questions/37710226/how-do-i-reach-cookie-information-in-python-requests
-    #Secure
     #HTTPOnly
-    #Path
-    #Domain
-    #Cookie lifetime
-    #SameSite
-    #see https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20171130_Cookie_Security_Myths_Misconceptions_David_Johansson.pdf
-    x = {}
+    #Secure - When a secure flag is used, then the cookie will only be sent over HTTPS
+    #SameSite - An HttpOnly Cookie is a tag added to a browser cookie that prevents client-side scripts from accessing data
+    #Cookie lifetime - Instead of expiring when the client is closed, permanent cookies expire at a specific date (Expires) or after a specific length of time (Max-Age). 
+    #Path - Only valid on specifics paths
+    #Domain - With domain set, cookies will be sent to that domain and all its subdomains. Not always ideal for different sites with independent authentication
+    #Host-only 
+
+    #Beware that cookie auditing via this tool is somewhat useless on sites where users have to consent to cookies via the website GUI
+    #For more on cookie consent law see https://ico.org.uk/for-organisations/guide-to-pecr/cookies-and-similar-technologies/
+    def analyseCookies(self, response : Response):
+        cookiesResults = self.getCookieData(response)
+        
+    def cookieRecommendations(self, cookieResults : Output.CookieResults):
+        cookieResults.recommendations = {}
+        for r in cookieResults.cookies:
+            if r.httpOnly == False:
+                if not "HTTPOnly" in cookieResults.recommendations:
+                    cookieResults.recommendations["HTTPOnly"] = "Some recommendation"
+            if r.secure == False:
+                if not "Secure" in cookieResults.recommendations:
+                    cookieResults.recommendations["HTTPOnly"] = "Some recommendation"
+            if not r.sameSite:
+                #Additional recommendation about strict vs lax
+                if not "Samesite" in cookieResults.recommendations:
+                    cookieResults.recommendations["Samesite"] = "Some recommendation"
+            #if r.lifetime:
+                #some recommendation about properly invalidating cookies if lifetime is too high
+
+            # if r.path:
+                #some recommendatin about cookie scope creep
+            # if r.domain:
+                #some recommendatin about cookie scope creep in terms of subdomains
+        
+    def getCookieData(self, response : Response):
+        cookiesResults = Output.CookieResults()
+        for cookie in response.cookies:
+           # attrs = cookie.__a
+            cookieResult = Output.CookieResult()
+            if cookie.has_nonstandard_attr('HttpOnly'):
+                cookieResult.httpOnly = True
+            if cookie.secure:
+                cookieResult.secure = True
+            if cookie.has_nonstandard_attr('SameSite'):
+                cookieResult.sameSite = cookie.get_nonstandard_attr('SameSite')
+
+            cookieResult.lifetime = cookie.expires
+            cookieResult.path = cookie.path
+            cookieResult.domain = cookie.domain
+
+            cookiesResults.cookies.append(cookieResult)
+
+            return cookiesResults

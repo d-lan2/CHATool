@@ -1,7 +1,7 @@
 """CHATool Cookie and Header Auditor Tool"""
 
 from .src.classes.HTTP import HTTP
-from .src.services.Auditor import HeaderAuditor
+from .src.services.Auditor import *
 from .src.services.WordWriter import WordWriter
 
 
@@ -13,10 +13,12 @@ def main(self):
     print("Status code:" + str(responseCode))
     input("Press enter to exit")
     
-def parameterisedMain(url,outputfilepath):
-    response = HTTP.get(url)
+def parameterisedMain(url,outputfilepath, cookieDict = None):
+    response = HTTP.get(url, cookieDict)
     results = HeaderAuditor().analyseHeaders(response)
+    CookieAuditor().analyseCookies(response)
     WordWriter().writeDoc(results, outputfilepath)
+
     return response.status_code
 
 

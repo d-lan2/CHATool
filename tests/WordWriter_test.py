@@ -1,6 +1,6 @@
 from ..src.services.WordWriter import WordWriter
 from ..src.services.Auditor import HeaderAuditor
-from ..src.classes.Output import Result
+from ..src.classes.Output import HeaderResult
 from docx import Document
 from pytest_mock import mocker
 import os
@@ -9,7 +9,7 @@ import os
 def test_can_open_and_save_new_copy_of_template(mocker) -> None:
     #Arrange
     testFilePath = 'output\\test1.docx'
-    fakeResult = Result()
+    fakeResult = HeaderResult()
   
     #Act
     WordWriter().writeDoc(fakeResult, testFilePath)
