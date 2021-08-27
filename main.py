@@ -1,15 +1,15 @@
 """CHATool Cookie and Header Auditor Tool"""
 
-from .src.classes.HTTP import HTTP
-from .src.services.Auditor import *
-from .src.services.WordWriter import WordWriter
+from src.classes.HTTP import HTTP
+from src.services.Auditor import *
+from src.services.WordWriter import WordWriter
 
 
-def main(self):
+def main():
     print("Welcome to CHATool!")
     print("The Cookie Header Audior Tool")
     url = input("Input url to scan the security headers:")
-    responseCode = self.parameterisedMain(url,"output\\test3.docx")
+    responseCode = parameterisedMain(url,"output\\test3.docx")
     print("Status code:" + str(responseCode))
     input("Press enter to exit")
     
