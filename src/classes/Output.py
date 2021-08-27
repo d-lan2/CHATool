@@ -14,13 +14,14 @@ class HeaderResult:
 class CookieResults:
     def __init__(self):
          self.cookies = []
+         self.recommendations = {}
 
 class CookieResult:
-    def __init__(self, secure = None, httpOnly = None, path = None, domain = None, lifetime = None, sameSite = None):
+    def __init__(self, secure = None, httpOnly = None, path = None, domain = None, expires = None, maxage = None, sameSite = None):
          self.secure = secure or False
          self.httpOnly = httpOnly or False
-         self.path = path or ""
-         self.domain = domain or ""
-         self.lifetime = lifetime or ""
+         self.path = path or None
+         self.domain = domain or None
+         self.expires = expires or None
+         self.maxage = maxage or None
          self.sameSite = sameSite or False
-         self.recommendations = {}

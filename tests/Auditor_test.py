@@ -1,6 +1,6 @@
 from http.cookiejar import Cookie
 from ..src.services.Auditor import CookieAuditor, HeaderAuditor
-from ..src.classes.Output import HeaderResult
+from ..src.classes.Output import CookieResult, CookieResults, HeaderResult
 from pytest_mock import mocker
 import requests 
 
@@ -92,7 +92,7 @@ def test_can_correctly_get_almost_deprecated_headers_data(mocker) -> None:
 
 def test_can_identify_cookie_attributes(mocker) -> None:
     #Arrange 
-    cookie = Cookie(version=0, name='SID', value='kvm5ds88s5gsggdosg9o1liuj6t52917hmjcd1j1ljv02fgb0snbajanogsommek8opfdcd1mkqmoppm63fa621gai7s78cunkfpn71', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None, 'SameSite':'Strict'}, rfc2109=False)
+    cookie = Cookie(version=0, name='SID', value='xxx', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None, 'SameSite':'Strict'}, rfc2109=False)
     fakeResponse = mocker.MagicMock()
     fakeResponse.cookies = [cookie]
 
@@ -102,14 +102,14 @@ def test_can_identify_cookie_attributes(mocker) -> None:
     #Assert 
     assert cookietData.cookies[0].domain == 'hack.me'
     assert cookietData.cookies[0].httpOnly == True
-    assert cookietData.cookies[0].lifetime == 1630158864
+    assert cookietData.cookies[0].expires == 1630158864
     assert cookietData.cookies[0].path == '/'
     assert cookietData.cookies[0].sameSite == 'Strict'
     assert cookietData.cookies[0].secure == True
 
-def test_can_recommend_safe_cookie_config(mocker) -> None:
+def test_can_correctly_get_maxage_and_expired(mocker) -> None:
     #Arrange 
-    cookie = Cookie(version=0, name='SID', value='kvm5ds88s5gsggdosg9o1liuj6t52917hmjcd1j1ljv02fgb0snbajanogsommek8opfdcd1mkqmoppm63fa621gai7s78cunkfpn71', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None, 'SameSite':'Strict'}, rfc2109=False)
+    cookie = Cookie(version=0, name='SID', value='xxx', port=None, port_specified=False, domain='hack.me', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True, expires=1630158864, discard=False, comment=None, comment_url=None, rest = {"Max-Age":12}, rfc2109=False)
     fakeResponse = mocker.MagicMock()
     fakeResponse.cookies = [cookie]
 
@@ -117,9 +117,101 @@ def test_can_recommend_safe_cookie_config(mocker) -> None:
     cookietData = CookieAuditor().getCookieData(fakeResponse)
     
     #Assert 
-    assert cookietData.cookies[0].domain == 'hack.me'
-    assert cookietData.cookies[0].httpOnly == True
-    assert cookietData.cookies[0].lifetime == 1630158864
-    assert cookietData.cookies[0].path == '/'
-    assert cookietData.cookies[0].sameSite == 'Strict'
-    assert cookietData.cookies[0].secure == True
+    assert cookietData.cookies[0].expires == 1630158864
+    assert cookietData.cookies[0].maxage == 12
+
+def test_can_recommend_safe_cookie_config_all_recommendations(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(False,False,'/','hack.me',1630158864,None,None)
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 6
+
+def test_can_recommend_safe_cookie_config_just_httpOnly(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,False,"/somepath",None,1800,0,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_secure(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(False,True,"/somepath",None,1800,0,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_path(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,True,"/",None,1800,0,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_domain(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,True,"/somepath","None",1800,0,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_expires(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,True,"/somepath",None,354689,0,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_maxage(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,True,"/somepath",None,None,33333333,"Strict")
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1
+
+def test_can_recommend_safe_cookie_config_just_samesite(mocker) -> None:
+    #Arrange 
+    fakeCookieResult = CookieResult(True,True,"/somepath",None,None,1800,None)
+    fakeCookieResults = CookieResults()
+    fakeCookieResults.cookies = [fakeCookieResult]
+
+    #Act
+    cookietData = CookieAuditor().cookieRecommendations(fakeCookieResults)
+    
+    #Assert 
+    assert len(cookietData.recommendations) == 1

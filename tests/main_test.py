@@ -14,7 +14,10 @@ def test_can_access_main(mocker) -> None:
 
     #Assert
     assert os.path.isfile(testFilePath) == True
+    #Assert headers table is populated
     assert document.tables[1].rows[1].cells[0].text == "X-Content-Type-Options"
+    #Assert cookies table is populated
+    assert document.tables[3].rows[1].cells[0].text == "Samesite"
 
     #Teardown
     os.remove(testFilePath)
