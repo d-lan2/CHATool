@@ -10,6 +10,7 @@ def main():
     print("The Cookie Header Audior Tool")
     url = input("Input url to scan the security headers:")
     responseCode = parameterisedMain(url,"output\\test3.docx")
+    print("WARNING: Cookie auditing may not work if the site requires user to consent to cookies first.")
     print("Status code:" + str(responseCode))
     input("Press enter to exit")
     
